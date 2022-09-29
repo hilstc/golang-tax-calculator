@@ -41,6 +41,7 @@ func Notify(ch *amqp.Channel, order Order) error {
 }
 
 func main() {
+
 	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	if err != nil {
 		panic(err)
@@ -53,7 +54,7 @@ func main() {
 	}
 	defer ch.Close()
 
-	for i := 0; i < 5000; i++ {
+	for i := 0; i < 500000; i++ {
 		order := GenerateOrders()
 
 		err := Notify(ch, order)
