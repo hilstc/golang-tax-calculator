@@ -1,7 +1,5 @@
 # Golang - Tax Calculator
 
----
-
 ### Goapp on Docker
 ```
 docker-compose up -d
