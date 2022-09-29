@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"sync"
 
 	"github.com/hilstc/golang-tax-calculator/internal/order/infra/database"
 	"github.com/hilstc/golang-tax-calculator/internal/order/usecase"
@@ -12,6 +13,8 @@ import (
 )
 
 func main() {
+	maxWorkers := 3
+	wg := sync.WaitGroup{}
 	db, err := sql.Open("mysql", "root:root@tcp(mysql:3306)/orders")
 	if err != nil {
 		panic(err)
@@ -31,23 +34,13 @@ func main() {
 	out := make(chan amqp.Delivery)
 
 	go rabbitmq.Consume(ch, out)
-	go worker(out, uc, 1)
-	go worker(out, uc, 2)
-	go worker(out, uc, 3)
 
-	// input := usecase.OrderInputDTO{
-	// 	ID:    "1234",
-	// 	Price: 100,
-	// 	Tax:   10,
-	// }
-
-	// output, err := uc.Execute(input)
-
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// println(output.FinalPrice)
+	wg.Add(maxWorkers)
+	for i := 0; i < maxWorkers; i++ {
+		defer wg.Done()
+		go worker(out, uc, i)
+	}
+	wg.Wait()
 
 }
 
