@@ -15,16 +15,6 @@ func NewOrderRepository(db *sql.DB) *OrderRepository {
 	return &OrderRepository{Db: db}
 }
 
-// sql create table on mysql
-// CREATE TABLE `orders` (
-//
-//	`id` varchar(255) NOT NULL,
-//	`price` float NOT NULL,
-//	`tax` float NOT NULL,
-//	`final_price` float NOT NULL,
-//	PRIMARY KEY (`id`))
-//
-// )
 func (r *OrderRepository) Save(order *entity.Order) error {
 	stmt, err := r.Db.Prepare("INSERT INTO orders (id, price, tax, final_price) VALUES (?, ?, ?, ?)")
 	if err != nil {
@@ -35,4 +25,17 @@ func (r *OrderRepository) Save(order *entity.Order) error {
 		return err
 	}
 	return nil
+}
+
+func (r *OrderRepository) GetTotal() (int, error) {
+	var total int
+	// Scans the memory address of "total" and adds the new value to the same variable
+	err := r.Db.QueryRow("SELECT COUNT(*) FROM orders").Scan(&total)
+
+	// Returns 0 and an error message in case of errors
+	if err != nil {
+		return 0, err
+	}
+	// If there are no errors, returns the value of "total" and returns a null error message
+	return total, nil
 }
