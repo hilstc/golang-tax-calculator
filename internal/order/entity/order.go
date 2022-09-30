@@ -2,10 +2,13 @@ package entity
 
 import "errors"
 
+// Saves the data on a database and gets the total value after the tax calculation
 type OrderRepositoryInterface interface {
 	Save(order *Order) error
+	GetTotal() (int, error)
 }
 
+// Defines the database structure
 type Order struct {
 	ID         string
 	Price      float64
