@@ -1,5 +1,12 @@
 # Golang - Tax Calculator
 
+Receives information from a program that consumes messages from RabbitMQ.
+
+### Folders
+- cmd: contains the main modules
+- internal: contains business rules
+- pkg: contains the RabbitMQ lib
+
 ### Goapp on Docker
 ```
 docker-compose up -d
@@ -13,7 +20,7 @@ go run cmd/producer/main.go
 
 ### Consumer
 ```
-go run cmd/main.go
+go run cmd/consumer/main.go
 ```
 
 ### Grafana
