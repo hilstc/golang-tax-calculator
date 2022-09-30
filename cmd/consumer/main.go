@@ -64,20 +64,14 @@ func main() {
 	// Starts consuming the messages on RabbitMQ with the number of workers defined in "maxWorkers"
 	go rabbitmq.Consume(ch, out)
 
-	// for i := 0; i < maxWorkers; i++ {
-	// 	wg.Add(1)
-	// 	i := i
-	// 	go func() {
-	// 		fmt.Println("Starting worker", i)
-	// 		defer wg.Done()
-	// 		worker(out, uc, i)
-	// 	}()
-	// }
-
-	wg.Add(maxWorkers)
 	for i := 0; i < maxWorkers; i++ {
-		defer wg.Done()
-		go worker(out, uc, i)
+		wg.Add(1)
+		i := i
+		go func() {
+			fmt.Println("Starting worker", i)
+			defer wg.Done()
+			worker(out, uc, i)
+		}()
 	}
 
 	// Waits until the RabbitMQ threads finish their execution
