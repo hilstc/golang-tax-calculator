@@ -2,6 +2,7 @@ package rabbitmq
 
 import amqp "github.com/rabbitmq/amqp091-go"
 
+// Opens a connection on RabbitMQ
 func OpenChannel() (*amqp.Channel, error) {
 
 	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
@@ -18,6 +19,7 @@ func OpenChannel() (*amqp.Channel, error) {
 	return ch, nil
 }
 
+// Consumes the messages on RabbitMQ
 func Consume(ch *amqp.Channel, out chan amqp.Delivery) error {
 	msgs, err := ch.Consume(
 		"orders",
